@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: black;
+      overflow: hidden;
+    }
+
+    /* Loading GIF */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1000;
+    }
+
+    #loading-screen img {
+      width: 220px;
+      height: auto;
+    }
+
+    #birthday-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background: pink;
+      color: black;
+    }
+
+    #music-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      padding: 8px 16px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      z-index: 1100;
+    }
+
+    /* Birthday screen */
+    #birthday-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: lightpink;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    /* Falling confetti */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: yellow;
+      animation: fall 4s linear infinite;
+    }
+
+    @keyframes fall {
+      from { transform: translateY(-100vh); }
+      to { transform: translateY(100vh); }
+    }
+
+    /* Sparkle / bar effect */
+    .sparkle {
+      position: absolute;
+      top: -50px;
+      width: 15px;
+      height: 40px;
+      background: #fff;
+      opacity: 0.8;
+      animation: sparkleFall 4s linear infinite;
+    }
+
+    @keyframes sparkleFall {
+      from { transform: translateY(-100px); }
+      to { transform: translateY(110vh); }
+    }
+
+    /* Message box */
+    .message-box {
+      position: relative;
+      margin: 80px auto 20px;
+      padding: 20px 30px;
+      max-width: 400px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      animation: slideDown 1.5s ease forwards;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-200px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .message-box h1 {
+      font-size: 2rem;
+      color: #d63384;
+      margin: 0;
+    }
+
+    .message-box p {
+      font-size: 1.1rem;
+      color: #8a0055;
+      margin-top: 8px;
+    }
+
+    /* Cartoon GIF */
+    .cartoon-gif {
+      position: fixed;
+      bottom: 20px;
+      left: -400px;
+      width: 210px; /* thoda bada */
+      transition: 1.5s ease;
+      z-index: 200;
+    }
+
+    .cartoon-gif.active {
+      left: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading screen -->
+  <div id="loading-screen">
+    <img src="https://files.catbox.moe/jal3ee.gif" alt="loading gif">
+    <button id="birthday-btn">🎁 Open Surprise</button>
+  </div>
+
+  <!-- Music toggle -->
+  <button id="music-btn">🔊 Sound</button>
+  <audio id="bg-music" loop>
+    <source src="https://files.catbox.moe/t1niuj.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Birthday screen -->
+  <div id="birthday-screen">
+    <!-- White message box -->
+    <div class="message-box">
+      <h1>🎂 Happy Birthday Rishu Didi 🎂</h1>
+      <p>✨ May your day be filled with love, smiles, and sweet surprises ✨</p>
+    </div>
+
+    <!-- Cartoon GIF -->
+    <img src="https://files.catbox.moe/2jrnpk.gif" class="cartoon-gif" id="cartoon">
+  </div>
+
+  <script>
+    const birthdayBtn = document.getElementById('birthday-btn');
+    const loadingScreen = document.getElementById('loading-screen');
+    const birthdayScreen = document.getElementById('birthday-screen');
+    const music = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-btn');
+    const cartoon = document.getElementById('cartoon');
+
+    // Birthday button click
+    birthdayBtn.addEventListener('click', () => {
+      loadingScreen.style.display = 'none';
+      birthdayScreen.style.display = 'block';
+      createConfetti();
+      createSparkles();
+      cartoon.classList.add('active');
+      music.play().catch(() => {}); // autoplay fallback
+    });
+
+    // Music toggle
+    let isPlaying = false;
+    musicBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        music.pause();
+        musicBtn.textContent = "🔇 Sound Off";
+      } else {
+        music.play();
+        musicBtn.textContent = "🔊 Sound On";
+      }
+      isPlaying = !isPlaying;
+    });
+
+    // Confetti generator
+    function createConfetti() {
+      for (let i = 0; i < 40; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        birthdayScreen.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 4000);
+      }
+    }
+
+    // Sparkle generator
+    function createSparkles() {
+      for (let i = 0; i < 20; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.classList.add('sparkle');
+        sparkle.style.left = Math.random() * window.innerWidth + 'px';
+        sparkle.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+        sparkle.style.animationDuration = (Math.random() * 3 + 1.5) + 's';
+        birthdayScreen.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 4000);
+      }
+    }
+  </script>
+</body>
+</html>
